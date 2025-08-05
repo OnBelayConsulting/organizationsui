@@ -1,0 +1,7 @@
+<app-header />
+@if (error()) {
+  <app-error-modal title="{{error()?.title}}" [code]="error()?.errorCode" [message]="error()?.errorMessage" />
+}
+<main>
+  <router-outlet></router-outlet>
+</main>

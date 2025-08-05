@@ -1,0 +1,17 @@
+<nav class="menu">
+  <div class="developer-status"><strong>Keycloak Events:</strong> {{ keycloakStatus }}</div>
+
+  <div class="actions">
+    @if (!authenticated()) {
+      <a routerLink="/" class="action-item">Home</a>
+    }
+    <a routerLink="/businesscontacts/list" class="action-item" *kaHasRoles="['view-orgs']"><b>Business Contacts</b></a>
+    <a routerLink="/organizations/list" class="action-item" *kaHasRoles="['view-orgs']"><b>Organizations</b></a>
+    <a routerLink="/profile" class="action-item" *kaHasRoles="['see-profile']">My Profile</a>
+    @if (!authenticated()) {
+      <button class="action-item" (click)="login()">Login</button>
+    } @else {
+      <button class="action-item" (click)="logout()">Logout</button>
+    }
+  </div>
+</nav>

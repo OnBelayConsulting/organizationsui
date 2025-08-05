@@ -1,0 +1,69 @@
+<article>
+<h2>Business Contacts</h2>
+
+
+  <div class="actions">
+    <i class="action-item">{{listBusinessContactService.searchCriteria()}}  </i>
+    <button class="action-item" (click)="startSearch()" type="button"><u><b>Search</b></u></button>
+    <button class="action-item" (click)="onToggleShowSearch()" type="button"><u><b>{{showSearchLabel()}}</b></u></button>
+    <a routerLink="../edit" class="action-item" *kaHasRoles="['view-orgs']">New</a>
+    <button class="action-item" (click)="onSynchronizeContacts()" type="button"><u><b>Synchronize Contacts</b></u></button>
+  </div>
+  @if (showSearchFields()) {
+    <app-contact-search (close) = "onClose()"/>
+  }
+
+  @if(transactionResult) {
+    Error occurred: {{transactionResult.errorCode}} on synchronization.
+  }
+
+
+@if (!businessContactCollection) {
+    <p class="empty-collection">No Business Contacts found.</p>
+  } @else {
+    <table>
+      <thead>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Contact Status</th>
+      <th>is Company Trader</th>
+      <th>is Counterparty Trader</th>
+      <th>is Administrator</th>
+      </thead>
+      <div>
+        @if (showPrev) {
+          <button type="button" id="toprev" (click)="onPrev()">Prev</button>
+        }
+        @if (showNext) {
+          <button type="button" id="topnext" (click)="onNext()">Next</button>
+        }
+      </div>
+      <tbody >
+        @for (contact of businessContactCollection!.snapshots; track contact.entityId!.id) {
+          @let entityId = contact.entityId!.id!;
+          <tr (click)="onSelected(entityId)">
+            <td><a [routerLink]="'../edit'" [queryParams]="{businessContactId: entityId}" > {{ contact!.detail!.firstName }} </a> </td>
+            <td>{{ contact!.detail!.lastName }}</td>
+            <td>{{ contact!.detail!.email }}</td>
+            <td>{{ contact!.detail!.phone }}</td>
+            <td>{{ contact!.detail!.contactStatusCodeValue }}</td>
+            <td>{{ contact!.detail!.isCompanyTrader }}</td>
+            <td>{{ contact!.detail!.isCounterpartyTrader }}</td>
+            <td>{{ contact!.detail!.isAdministrator }}</td>
+          </tr>
+        }
+      </tbody>
+      <div>
+        @if (showPrev) {
+          <button type="button" id="bottomnext" (click)="onPrev()">Prev</button>
+        }
+        @if (showNext) {
+          <button type="button" id="bottomprev" (click)="onNext()">Next</button>
+        }
+      </div>
+    </table>
+  }
+</article>
+

@@ -1,0 +1,105 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <h2>Create/Update Business Contact</h2>
+
+  <div class="control-row">
+    <div class="control">
+      <label for="shortName">First Name</label>
+      <input
+        id="shortName"
+        name="shortName"
+        type="text"
+        [formControl]="myForm.controls.firstName"
+      />
+    </div>
+
+    <div class="control">
+      <label for="legalName">Last Name</label>
+      <input
+        id="legalName"
+        name="legalName"
+        type="text"
+        [formControl]="myForm.controls.lastName"
+      />
+    </div>
+  </div>
+  <div class="control-row">
+    <div class="control">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="text"
+        [formControl]="myForm.controls.email"
+      />
+    </div>
+
+    <div class="control">
+      <label for="contactStatus">Contact Status</label>
+      <select id="contactStatus" name="contactStatus" [formControl]="myForm.controls.contactStatus">
+        <option value="Pending">Pending</option>
+        <option value="Active">Active</option>
+        <option value="Suspended">Denied</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="control-row">
+    <div class="control">
+      <label for="phone">Phone</label>
+      <input
+        id="phone"
+        name="phone"
+        type="text"
+        [formControl]="myForm.controls.phone"
+      />
+    </div>
+
+    <div class="control">
+      <label for="isAdmin">Is Administrator</label>
+      <input
+        id="isAdmin"
+        name="isAdmin"
+        type="checkbox"
+        [formControl]="myForm.controls.isAdministrator"
+      />
+    </div>
+  </div>
+    <div class="control-row">
+      <div class="control">
+        <label for="isCompanyTrader">Is Company Trader</label>
+        <input
+          id="isCompanyTrader"
+          name="isCompanyTrader"
+          type="checkbox"
+          [formControl]="myForm.controls.isCompanyTrader"
+        />
+      </div>
+
+      <div class="control">
+        <label for="isCounterpartyTrader">Is Counterparty Trader</label>
+        <input
+          id="isCounterpartyTrader"
+          name="isCounterpartyTrader"
+          type="checkbox"
+          [formControl]="myForm.controls.isCounterpartyTrader"
+        />
+      </div>
+    </div>
+  @if (transactionResult) {
+    @if (transactionResult.errorCode === '0') {
+      Transaction Successful!
+      <p class="form-actions">
+        <button type="reset" (click) = "onReset()" class="button button-flat">Close</button>
+      </p>
+    } @else {
+      Transaction failed {{transactionResult.errorCode}} {{transactionResult.errorMessage}}
+    }
+  } @else {
+    <p class="form-actions">
+      <button type="reset" (click) = "onReset()" class="button button-flat">Cancel</button>
+      <button type="submit" class="button">Save</button>
+    </p>
+
+  }
+
+</form>

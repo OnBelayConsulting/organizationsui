@@ -1,0 +1,66 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <h2>Create/Update Organization</h2>
+
+  <div class="control-row">
+    <div class="control">
+      <label for="shortName">Short Name</label>
+      <input
+        id="shortName"
+        name="shortName"
+        type="text"
+        [formControl]="myForm.controls.shortName"
+      />
+    </div>
+
+    <div class="control">
+      <label for="legalName">Legal Name</label>
+      <input
+        id="legalName"
+        name="legalName"
+        type="text"
+        [formControl]="myForm.controls.legalName"
+      />
+    </div>
+  </div>
+  <div class="control-row">
+    <div class="control">
+      <label for="industryType">Industry Type</label>
+      <select id="industryType" name="industryType" [formControl]="myForm.controls.industryType">
+        <option value="Energy">Energy</option>
+        <option value="Financial">Financial</option>
+        <option value="Manufacturing">Manufacturing</option>
+        <option value="Retail">Retail</option>
+      </select>
+      />
+    </div>
+
+    <div class="control">
+      <label for="creditStatus">Credit Status</label>
+      <select id="creditStatus" name="creditStatus" [formControl]="myForm.controls.creditStatus">
+        <option value="Pending">Pending</option>
+        <option value="Granted">Granted</option>
+        <option value="Denied">Denied</option>
+        <option value="Under Review">Under Review</option>
+      </select>
+    </div>
+  </div>
+
+  @if (transactionResult) {
+    @if (transactionResult.errorCode === '0') {
+      Transaction Successful!
+      <p class="form-actions">
+        <button type="reset" (click) = "onReset()" class="button button-flat">Close</button>
+      </p>
+    } @else {
+      Transaction failed {{transactionResult.errorCode}} {{transactionResult.errorMessage}}
+    }
+  } @else {
+    <p class="form-actions">
+      <button type="reset" (click) = "onReset()" class="button button-flat">Cancel</button>
+      <button type="submit" class="button">Save</button>
+    </p>
+
+  }
+
+</form>
+

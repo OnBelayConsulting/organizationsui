@@ -1,0 +1,56 @@
+<article>
+  <h2>Organizations  </h2>
+
+  <div class="actions">
+    <i class="action-item">{{listOrganizationService.searchCriteria()}}  </i>
+      <button class="action-item" (click)="startSearch()" type="button"><u><b>Search</b></u></button>
+      <button class="action-item" (click)="onToggleShowSearch()" type="button"><u><b>{{showSearchLabel()}}</b></u></button>
+      <a routerLink="../edit" class="action-item" *kaHasRoles="['view-orgs']">New</a>
+  </div>
+  @if (showSearchFields()) {
+    <app-org-search (close) = "onClose()"/>
+  }
+
+  @if (!organizationCollection) {
+    <p class="no-organizations">No organizations found.</p>
+  } @else {
+    <table>
+      <thead>
+      <th>Short Name</th>
+      <th>Legal Name</th>
+      <th>Credit Status</th>
+      <th>Industry Type</th>
+      </thead>
+
+      <div>
+        @if (showPrev) {
+        <button type="button" id="toprev" (click)="onPrev()">Prev</button>
+        }
+        @if (showNext) {
+        <button type="button" id="topnext" (click)="onNext()">Next</button>
+        }
+      </div>
+      <tbody >
+      @if (organizationCollection.snapshots) {
+        @for (organization of organizationCollection!.snapshots; track organization.entityId!.id) {
+          @let entityId = organization.entityId!.id!;
+          <tr (click)="onSelected(entityId)">
+            <td><a [routerLink]="'../edit'" [queryParams]="{organizationId: entityId}" > {{ organization!.detail!.shortName }} </a> </td>
+            <td>{{ organization!.detail!.legalName }}</td>
+            <td>{{ organization!.detail!.creditStatusCodeValue }}</td>
+            <td>{{ organization!.detail!.industryTypeCodeValue }}</td>
+          </tr>
+        }
+      }
+      </tbody>
+      <div>
+        @if (showPrev) {
+          <button type="button" id="bottomnext" (click)="onPrev()">Prev</button>
+        }
+        @if (showNext) {
+          <button type="button" id="bottomprev" (click)="onNext()">Next</button>
+        }
+      </div>
+    </table>
+  }
+</article>
