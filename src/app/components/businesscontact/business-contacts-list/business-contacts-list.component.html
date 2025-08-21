@@ -3,14 +3,13 @@
 
 
   <div class="actions">
-    <i class="action-item">{{listBusinessContactService.searchCriteria()}}  </i>
-    <button class="action-item" (click)="startSearch()" type="button"><u><b>Search</b></u></button>
-    <button class="action-item" (click)="onToggleShowSearch()" type="button"><u><b>{{showSearchLabel()}}</b></u></button>
-    <a routerLink="../edit" class="action-item" *kaHasRoles="['view-orgs']">New</a>
+    <i class="action-item">{{businessContactSearchService.searchCriteria()}}  </i>
+    <button class="action-item" (click)="onShowSearch()" type="button"><u><b>Search</b></u></button>
+    <a routerLink="../edit" class="action-item" >New</a>
     <button class="action-item" (click)="onSynchronizeContacts()" type="button"><u><b>Synchronize Contacts</b></u></button>
   </div>
   @if (showSearchFields()) {
-    <app-contact-search (close) = "onClose()"/>
+    <app-contact-search (search)="onClose()" (cancel)="onSearchCancel()"/>
   }
 
   @if(transactionResult) {

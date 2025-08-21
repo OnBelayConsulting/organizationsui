@@ -1,7 +1,7 @@
 import {Component, DestroyRef, inject, input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from '@angular/router';
-import {OrganizationService} from '../../../services/organization.service';
+import {OrganizationService} from '../services/organization.service';
 import {OrganizationSnapshot} from '../model/organization.model';
 import {TransactionResult} from '../../../models/transactionresult.model';
 

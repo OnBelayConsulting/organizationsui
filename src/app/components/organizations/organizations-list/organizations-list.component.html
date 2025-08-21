@@ -2,14 +2,20 @@
   <h2>Organizations  </h2>
 
   <div class="actions">
-    <i class="action-item">{{listOrganizationService.searchCriteria()}}  </i>
-      <button class="action-item" (click)="startSearch()" type="button"><u><b>Search</b></u></button>
-      <button class="action-item" (click)="onToggleShowSearch()" type="button"><u><b>{{showSearchLabel()}}</b></u></button>
+    <i class="action-item">{{organizationSearchService.searchCriteria()}}  </i>
+      <button class="action-item" (click)="onShowSearch()" type="button"><u><b>Search</b></u></button>
+      <button class="action-item" (click)="onSynchronizeOrganizations()" type="button"><u><b>Synchronize Organizations</b></u></button>
       <a routerLink="../edit" class="action-item" *kaHasRoles="['view-orgs']">New</a>
   </div>
   @if (showSearchFields()) {
-    <app-org-search (close) = "onClose()"/>
+    <app-org-search (search)="onClose()" (cancel)="onCancelSearch()" />
   }
+
+  @if(transactionResult) {
+    Error occurred: {{transactionResult.errorCode}} on synchronization.
+  }
+
+
 
   @if (!organizationCollection) {
     <p class="no-organizations">No organizations found.</p>

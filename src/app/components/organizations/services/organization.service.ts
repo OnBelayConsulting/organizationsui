@@ -2,12 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {catchError, Observable, tap, throwError} from 'rxjs';
 
-import {ErrorService} from '../components/shared/service/error.service';
+import {ErrorService} from '../../shared/service/error.service';
 import {
   OrganizationSnapshot, OrganizationSnapshotCollection
-} from '../components/organizations/model/organization.model';
-import {TransactionResult} from '../models/transactionresult.model';
-import {environment} from '../../environments/environment';
+} from '../model/organization.model';
+import {TransactionResult} from '../../../models/transactionresult.model';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,25 +17,24 @@ export class OrganizationService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorService);
 
-
-
-  listOrganizations(): Observable<OrganizationSnapshotCollection> {
-    return this.http.get<OrganizationSnapshotCollection>(this.orgURL + '/organizations')
-      .pipe(
-        catchError( (error: HttpErrorResponse) => {
-          console.log(error);
-          this.errorService.showError("Fetching organizations failed on", error.error.errorCode, error.message);
-          return throwError( () => new Error("Network error occurred."))
-        })
-      );
-  }
-
   saveOrganization(organization: OrganizationSnapshot): Observable<TransactionResult> {
     return this.http.post<TransactionResult>(this.orgURL + '/organizations', organization)
       .pipe(
         catchError( (error) => {
           console.log(error);
           this.errorService.showError("Save organization failed on", error.error.errorCode, error.message);
+          return throwError( () => new Error("Network error occurred."))
+        })
+      );
+  }
+
+
+  synchronizeOrganizations(): Observable<TransactionResult> {
+    return this.http.post<TransactionResult>(environment.orgAppUrl + '/organizations/sync', {})
+      .pipe(
+        catchError( (error) => {
+          console.log(error);
+          this.errorService.showError("Sync on Organizations failed on", error.error.errorCode, error.message);
           return throwError( () => new Error("Network error occurred."))
         })
       );

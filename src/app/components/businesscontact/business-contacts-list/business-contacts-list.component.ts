@@ -1,16 +1,16 @@
 import {Component, DestroyRef, effect, inject, signal} from '@angular/core';
-import {BusinessContactService} from '../../../services/business-contact.service';
-import {ListBusinessContactService} from '../services/list-business-contact.service';
+import {BusinessContactService} from '../services/business-contact.service';
 import {BusinessContactSnapshotCollection} from '../model/business-contact.model';
 import {RouterLink} from '@angular/router';
 import {HasRolesDirective} from 'keycloak-angular';
 import {BusinessContactSearchComponent} from '../business-contact-search/business-contact-search.component';
 import {TransactionResult} from '../../../models/transactionresult.model';
+import {BusinessContactSearchService} from '../services/business-contact-search.service';
+
 @Component({
   selector: 'app-list-business-contacts',
   imports: [
     RouterLink,
-    HasRolesDirective,
     BusinessContactSearchComponent
   ],
   templateUrl: './business-contacts-list.component.html',
@@ -18,13 +18,11 @@ import {TransactionResult} from '../../../models/transactionresult.model';
 })
 export class BusinessContactsListComponent {
   businessContactService = inject(BusinessContactService);
-  listBusinessContactService = inject(ListBusinessContactService);
+  businessContactSearchService = inject(BusinessContactSearchService);
 
   selectedBusinessContactId: number | undefined = undefined;
   businessContactCollection :BusinessContactSnapshotCollection | undefined = undefined;
   showSearchFields = signal<boolean>(false);
-
-  showSearchLabel = signal("Change");
 
   transactionResult : TransactionResult | undefined = undefined;
 
@@ -37,9 +35,9 @@ export class BusinessContactsListComponent {
   constructor() {
     effect(() => {
       let subscription  =this.businessContactService.findBusinessContacts(
-        this.listBusinessContactService.searchCriteria(),
+        this.businessContactSearchService.searchCriteria(),
         0,
-        this.listBusinessContactService.limitSetting()).subscribe({
+        this.businessContactSearchService.limitSetting()).subscribe({
         next: (data) => {
           this.businessContactCollection = data;
           this.setNextAndPrev()
@@ -77,9 +75,9 @@ export class BusinessContactsListComponent {
 
   startSearch() {
     let subscription  =this.businessContactService.findBusinessContacts(
-      this.listBusinessContactService.searchCriteria(),
+      this.businessContactSearchService.searchCriteria(),
       0,
-      this.listBusinessContactService.limitSetting()).subscribe({
+      this.businessContactSearchService.limitSetting()).subscribe({
       next: (data) => {
         this.businessContactCollection = data;
         this.setNextAndPrev()
@@ -107,7 +105,7 @@ export class BusinessContactsListComponent {
     let currentPosition = this.businessContactCollection!.start + this.businessContactCollection!.count;
 
     let subscription  =this.businessContactService.findBusinessContacts(
-      this.listBusinessContactService.searchCriteria(),
+      this.businessContactSearchService.searchCriteria(),
       currentPosition,
       this.businessContactCollection!.limit
     ).subscribe({
@@ -128,7 +126,7 @@ export class BusinessContactsListComponent {
       newStart = 0;
 
     let subscription  =this.businessContactService.findBusinessContacts(
-      this.listBusinessContactService.searchCriteria(),
+      this.businessContactSearchService.searchCriteria(),
       newStart,
       this.businessContactCollection!.limit
     ).subscribe({
@@ -143,17 +141,15 @@ export class BusinessContactsListComponent {
   }
   onClose() {
     this.showSearchFields.set(false);
-    this.showSearchLabel.set('Change');
-  }
-
-  onToggleShowSearch() {
-    this.showSearchFields.update( (val) => !val);
-    if (!this.showSearchFields())
-      this.showSearchLabel.set("Change");
-    else
-      this.showSearchLabel.set("Hide");
+    this.startSearch();
   }
 
 
+  onShowSearch() {
+    this.showSearchFields.set(true);
+  }
 
+  onSearchCancel() {
+    this.showSearchFields.set(false);
+  }
 }

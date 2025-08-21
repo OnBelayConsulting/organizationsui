@@ -1,0 +1,75 @@
+<form>
+  <p><h3>WHERE</h3>
+  <div class = "control-row">
+    <div class = control>
+      <label for="searchCriteria">Search Criteria</label>
+      <textarea [rows] = "2" [cols]="50"  type="text" id="searchCriteria" name="searchCriteria" [(ngModel)]="localSelectionCriteria"></textarea>
+    </div>
+  </div>
+  <div class = "control-row">
+    <div class = control>
+      <label for="orderBy">Order By</label>
+      <textarea [rows] = "1" [cols]="50"   type="text" id="orderBy" name="orderBy" [(ngModel)]="localOrderByCriteria"></textarea>
+    </div>
+  </div>
+
+  <div class = "control-row">
+    <div class = control>
+      <label for="searchField">Search Field</label>
+      <select name="searchField" id="searchField" [(ngModel)]="searchField">
+        @for (item of searchService.searchColumns; track item.columnName) {
+          <option  value="{{item.columnName}}">{{ item.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class = control>
+      <label for="searchOperator">Operator</label>
+      <select name="searchOperator" id="searchOperator" [(ngModel)]="searchOperator">
+        @for (item of searchOperatorListItems(); track item.value) {
+          <option  value="{{item.value}}">{{ item.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class = "control">
+      @if (searchCodes()) {
+        <label for="searchCode">Select</label>
+        <select name="searchCode" id="searchCode" [(ngModel)]="searchValue">
+          @for (item of searchCodes(); track item.code) {
+            <option  value="{{item.code}}">{{ item.label }}</option>
+          }
+        </select>
+      } @else {
+        <label for="searchValue">Search Value</label>
+        <input  type="text" id="searchValue" name="searchValue" [(ngModel)]="searchValue"/>
+      }
+    </div>
+    <div class = "control">
+      <button  (click)="onAddExpression()" type="button">Add Expression</button>
+    </div>
+  </div>
+
+  <div class = "control-row" >
+    <p>
+      <button class="searchbutton" (click)="onAddOpenBracket()" type="button">(</button>
+    </p>
+    <p>
+      <button class="searchbutton" (click)="onAddCloseBracket()" type="button">)</button>
+    </p>
+    <p>
+      <button class="searchbutton" (click)="onAddAnd()" type="button">AND</button>
+    </p>
+  </div>
+  <p class="control-row">
+    <button class="button" (click)="onCancel()" type="button">Cancel</button>
+    <button class="button" (click)="onReset()" type="button">Reset</button>
+    <button class="button" (click)="onClose()" type="button">Search</button>
+  </p>
+  <div class = "control-row">
+    <div class = "control">
+      <label for="searchLimit">Limit</label>
+      <input  type="number" id="searchLimit" name="searchLimit" [(ngModel)]="localSearchLimit"/>
+    </div>
+  </div>
+</form>

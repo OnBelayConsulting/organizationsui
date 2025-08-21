@@ -1,13 +1,13 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {ErrorService} from '../components/shared/service/error.service';
+import {ErrorService} from '../../shared/service/error.service';
 import {catchError, Observable, throwError} from 'rxjs';
-import {TransactionResult} from '../models/transactionresult.model';
-import {environment} from '../../environments/environment';
+import {TransactionResult} from '../../../models/transactionresult.model';
+import {environment} from '../../../../environments/environment';
 import {
   BusinessContactSnapshot,
   BusinessContactSnapshotCollection
-} from '../components/businesscontact/model/business-contact.model';
+} from '../model/business-contact.model';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class BusinessContactService {
       .pipe(
         catchError( (error) => {
           console.log(error);
-          this.errorService.showError("Save business contact failed on", error.error.errorCode, error.message);
+          this.errorService.showError("Sync on business contact failed on", error.error.errorCode, error.message);
           return throwError( () => new Error("Network error occurred."))
         })
       );

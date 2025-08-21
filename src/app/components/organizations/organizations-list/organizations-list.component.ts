@@ -1,10 +1,11 @@
-import {Component, DestroyRef, effect, inject, input, OnInit, signal} from '@angular/core';
-import {OrganizationService} from '../../../services/organization.service';
+import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {OrganizationService} from '../services/organization.service';
 import {Router, RouterLink} from '@angular/router';
 import {OrganizationSnapshotCollection} from '../model/organization.model';
-import {ListOrganizationService} from '../services/list-organizations.service';
 import {OrganizationSearchComponent} from '../organization-search/organization-search.component';
 import {HasRolesDirective} from 'keycloak-angular';
+import {OrganizationSearchService} from '../services/organization-search.service';
+import {TransactionResult} from '../../../models/transactionresult.model';
 
 @Component({
   selector: 'app-organizations',
@@ -19,14 +20,13 @@ import {HasRolesDirective} from 'keycloak-angular';
 export class OrganizationsListComponent implements  OnInit{
   private organizationService = inject(OrganizationService);
   private router = inject(Router);
-  listOrganizationService = inject(ListOrganizationService);
+  organizationSearchService = inject(OrganizationSearchService);
+  transactionResult : TransactionResult | undefined = undefined;
 
   selectedOrganizationId: number | undefined = undefined;
 
   organizationCollection: OrganizationSnapshotCollection | undefined = undefined;
   showSearchFields = signal<boolean>(false);
-
-  showSearchLabel = signal("Change");
 
   showNext: boolean = false;
   showPrev: boolean = false;
@@ -63,9 +63,9 @@ export class OrganizationsListComponent implements  OnInit{
 
   startSearch() {
     let subscription  =this.organizationService.findOrganizations(
-      this.listOrganizationService.searchCriteria(),
+      this.organizationSearchService.searchCriteria(),
       0,
-      this.listOrganizationService.limitSetting()).subscribe({
+      this.organizationSearchService.limitSetting()).subscribe({
       next: (data) => {
         this.organizationCollection = data;
         this.setNextAndPrev()
@@ -81,7 +81,7 @@ export class OrganizationsListComponent implements  OnInit{
     let currentPosition = this.organizationCollection!.start + this.organizationCollection!.count;
 
     let subscription  =this.organizationService.findOrganizations(
-      this.listOrganizationService.searchCriteria(),
+      this.organizationSearchService.searchCriteria(),
       currentPosition,
       this.organizationCollection!.limit
       ).subscribe({
@@ -102,7 +102,7 @@ export class OrganizationsListComponent implements  OnInit{
       newStart = 0;
 
     let subscription  =this.organizationService.findOrganizations(
-      this.listOrganizationService.searchCriteria(),
+      this.organizationSearchService.searchCriteria(),
       newStart,
       this.organizationCollection!.limit
     ).subscribe({
@@ -119,16 +119,28 @@ export class OrganizationsListComponent implements  OnInit{
 
   onClose() {
     this.showSearchFields.set(false);
-    this.showSearchLabel.set('Change');
-  }
-
-  onToggleShowSearch() {
-    this.showSearchFields.update( (val) => !val);
-    if (!this.showSearchFields())
-      this.showSearchLabel.set("Change");
-    else
-      this.showSearchLabel.set("Hide");
+    this.startSearch();
   }
 
 
+  onCancelSearch() {
+    this.showSearchFields.set(false);
+  }
+
+  onSynchronizeOrganizations() {
+    let subscription  =this.organizationService.synchronizeOrganizations().subscribe({
+      next: (data) => {
+        this.transactionResult = data;
+      },
+      error: err => console.log(err)
+    });
+
+    this.destroyRef.onDestroy( () => subscription.unsubscribe());
+  }
+
+
+  onShowSearch() {
+    this.showSearchFields.set(true);
+
+  }
 }

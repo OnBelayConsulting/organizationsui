@@ -2,7 +2,7 @@ import {Component, DestroyRef, inject, input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from '@angular/router';
 import {TransactionResult} from '../../../models/transactionresult.model';
-import {BusinessContactService} from '../../../services/business-contact.service';
+import {BusinessContactService} from '../services/business-contact.service';
 import {BusinessContactSnapshot} from '../model/business-contact.model';
 
 @Component({
